@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'dart:io';
 
 void main() {
@@ -37,7 +36,6 @@ class _DownloaderPageState extends State<DownloaderPage> {
   String _category = 'videos';
 
   Future<void> _download() async {
-    await Permission.storage.request();
     setState(() {
       _isLoading = true;
       _status = 'מוריד...';
