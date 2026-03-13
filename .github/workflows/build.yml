@@ -8,10 +8,10 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Setup Java
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           distribution: 'zulu'
           java-version: '17'
@@ -21,14 +21,22 @@ jobs:
         with:
           flutter-version: '3.19.0'
 
+      - name: Create Flutter project structure
+        run: |
+          flutter create --org com.example --project-name youtube_downloader tmp_project
+          cp -r tmp_project/android/. android/
+          cp -r tmp_project/android/app/src/. android/app/src/
+          cp lib/main.dart tmp_project/lib/main.dart
+          cp pubspec.yaml tmp_project/pubspec.yaml
+
       - name: Install dependencies
-        run: flutter pub get
+        run: cd tmp_project && flutter pub get
 
       - name: Build APK
-        run: flutter build apk --release
+        run: cd tmp_project && flutter build apk --release
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: downloader
-          path: build/app/outputs/flutter-apk/app-release.apk
+          path: tmp_project/build/app/outputs/flutter-apk/app-release.apk
